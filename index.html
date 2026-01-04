@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuenta Regresiva de Cumpleaños</title>
+    <style>
+         :root {
+            --bg-pink: #ffb1b1;
+            --door-red: #ff5e5e;
+            --trim-red: #ff4d4d;
+            --knob-gold: #c5a059;
+            --text-white: rgba(255, 255, 255, 0.9);
+        }
+        
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            background-color: var(--bg-pink);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        
+        .door-frame {
+            width: 320px;
+            height: 580px;
+            background-color: var(--trim-red);
+            border-radius: 160px 160px 0 0;
+            padding: 15px 15px 0 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .door-leaf {
+            width: 100%;
+            height: 100%;
+            background-color: var(--door-red);
+            border-radius: 145px 145px 0 0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .inner-panel {
+            position: absolute;
+            width: 88%;
+            height: 94%;
+            border: 2px solid rgba(0, 0, 0, 0.03);
+            border-radius: 125px 125px 0 0;
+            top: 10px;
+            pointer-events: none;
+        }
+        /* Estilos del Contador */
+        
+        .countdown-container {
+            margin-top: 160px;
+            text-align: center;
+            color: var(--text-white);
+            z-index: 5;
+        }
+        
+        .countdown-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        .timer {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .time-segment {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+        
+        .knob {
+            position: absolute;
+            right: 20px;
+            top: 55%;
+            width: 28px;
+            height: 28px;
+            background-color: var(--knob-gold);
+            border-radius: 50%;
+            box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="door-frame">
+        <div class="door-leaf">
+            <div class="inner-panel"></div>
+
+            <div class="countdown-container">
+                <div class="countdown-title">Mi Cumpleaños</div>
+                <div class="timer">
+                    <div class="time-segment">
+                        <span class="number" id="days">00</span>
+                        <span class="label">Días</span>
+                    </div>
+                    <div class="time-segment">
+                        <span class="number" id="hours">00</span>
+                        <span class="label">Horas</span>
+                    </div>
+                    <div class="time-segment">
+                        <span class="number" id="minutes">00</span>
+                        <span class="label">Minutos</span>
+                    </div>
+                    <div class="time-segment">
+                        <span class="number" id="seconds">00</span>
+                        <span class="label">Segundos</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="knob"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+
+            // Definir el objetivo: 5 de Febrero
+            let targetDate = new Date(`February 5, ${currentYear} 00:00:00`);
+
+            // Si ya pasó el 5 de febrero este año, apuntar al próximo año
+            if (now > targetDate) {
+                targetDate = new Date(`February 11, ${currentYear + 1} 00:00:00`);
+            }
+
+            const diff = targetDate - now;
+
+            // Cálculos de tiempo
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            // Inyectar en el HTML con formato de dos dígitos
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+
+            // Si es el día del cumpleaños
+            if (diff < 0) {
+                clearInterval(timerInterval);
+                document.querySelector('.countdown-container').innerHTML = "<h1>¡Feliz Cumpleaños!</h1>";
+            }
+        }
+
+        // Actualizar cada segundo
+        const timerInterval = setInterval(updateCountdown, 1000);
+
+        // Ejecutar inmediatamente al cargar
+        updateCountdown();
+    </script>
+</body>
+
+</html>
